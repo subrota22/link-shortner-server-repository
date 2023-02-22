@@ -58,10 +58,10 @@ async function run() {
     // URL shortener endpoint
     app.post("/shortLinks", async (req, res) => {
       const origUrl = req.body.url;
-      const base = `https://link-shortner-five.vercel.app`;
+      const base = `https://mitly.vercel.app`;
 
       const urlId = shortid.generate();
-      // if (utils.validateUrl(origUrl)) {
+    
       try {
 
         const shortUrl = `${base}/${urlId}`;
@@ -106,18 +106,20 @@ async function run() {
 
     // redirect endpoint
     app.get("/:urlId", async (req, res) => {
+
       try {
         let url = await shortLinksCollection.findOne({ urlId: req.params.urlId });
 
         if (url) {
           await shortLinksCollection.updateOne({ _id: new ObjectId(url._id) }, { $inc: { clicks: 1 } });
           return res.redirect(url.origUrl);
-        } else res.status(404).json("Not found");
-
+      }else{
+        return res.send(" Url not found !!") ;
+      //  return res.write('<html> <h2> Url not found !! </h2> </html>')
       }
+    }
       catch (err) {
-        console.log(err);
-        res.status(500).json("Server Error");
+        res.status(500).json({"ServerError": err });
       }
     });
 
@@ -130,7 +132,6 @@ async function run() {
     })
   } finally {
     // Ensures that the client will close when you finish/error
-    // await client.close();
   }
 }
 
