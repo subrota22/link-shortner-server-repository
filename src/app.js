@@ -94,9 +94,16 @@ async function run() {
     app.get("/shortLinks", verifyJWT, async (req, res) => {
       const email = req.query.email;
       const decodedEmail = req.decoded.email;
+      const page = parseInt(req.query.page);
+      const size = parseInt(req.query.size);
+      const query = { email: email };
+
       if (email === decodedEmail) {
-        const result = await shortLinksCollection.find({ email: email }).sort({ _id: -1 }).toArray();
-        res.send(result);
+        const cursor =  shortLinksCollection.find(query);
+        const count = await shortLinksCollection.count({email:email});
+        const data = await cursor.skip(page * size).limit(size).sort({_id: -1 }).toArray();
+        res.status(201).send({ count, data });
+  
       } else {
         res.status(403).send({ message: "unauthorize access" });
       }
