@@ -1,12 +1,17 @@
 {
   "name": "link-shortner",
   "version": "1.0.0",
+     { 
+  "engines" : { 
+    "node" : ">=15.0.0" 
+  }
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start":"node src/app.js",
     "dev": "nodemon src/app.js"
+}
   },
   "keywords": [],
   "author": "",
